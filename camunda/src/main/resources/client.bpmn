@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1iam4yr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
-  <bpmn:process id="PROCESS_CREATE_ACCOUNT_ID" name="PROCESS_CREATE_ACCOUNT" isExecutable="true" camunda:versionTag="1">
-    <bpmn:startEvent id="StartEvent_1">
+  <bpmn:process id="PROCESS_CREATE_ACCOUNT_CLIENT_ID" name="PROCESS_CREATE_ACCOUNT_CLIENT" isExecutable="true" camunda:versionTag="1">
+    <bpmn:startEvent id="START_EVENT_CLIENT_ID">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="VAR_CLIENT_NAME_1" label="Nombre cliente 1" type="string" defaultValue="Morfeo">
@@ -20,7 +20,7 @@
     <bpmn:endEvent id="Event_10rqmr2">
       <bpmn:incoming>Flow_0dcgdsg</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0dcgdsg" sourceRef="Activity_1967w52" targetRef="Event_10rqmr2" />
+    <bpmn:sequenceFlow id="Flow_0dcgdsg" sourceRef="CLOSE_BY_INACTIVITY_TASK" targetRef="Event_10rqmr2" />
     <bpmn:endEvent id="Event_1qrg7j6">
       <bpmn:incoming>Flow_10yv5mt</bpmn:incoming>
     </bpmn:endEvent>
@@ -44,23 +44,18 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0m62yyb" sourceRef="Gateway_0nlc5f4" targetRef="Event_1u73gwj" />
-    <bpmn:sequenceFlow id="Flow_120ksph" sourceRef="Event_1u73gwj" targetRef="Activity_1967w52" />
+    <bpmn:sequenceFlow id="Flow_120ksph" sourceRef="Event_1u73gwj" targetRef="CLOSE_BY_INACTIVITY_TASK" />
     <bpmn:sequenceFlow id="Flow_0ygjb7m" sourceRef="Event_0l5bw4m" targetRef="Activity_064eiae" />
-    <bpmn:serviceTask id="Activity_1voxb1a" name="Write log info" camunda:type="external" camunda:topic="WRITE_LOG_INFO_TOPIC">
+    <bpmn:serviceTask id="WRITE_LOG_INFO_TASK" name="Write log info" camunda:type="external" camunda:topic="WRITE_LOG_INFO_TASK_TOPIC">
       <bpmn:incoming>Flow_05wbun5</bpmn:incoming>
       <bpmn:outgoing>Flow_1uy55sm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1967w52" name="Close by inactivity" camunda:type="external" camunda:topic="CLOSE_BY_INACTIVITY_TOPIC">
+    <bpmn:serviceTask id="CLOSE_BY_INACTIVITY_TASK" name="Close by inactivity" camunda:type="external" camunda:topic="CLOSE_BY_INACTIVITY_TOPIC">
       <bpmn:incoming>Flow_120ksph</bpmn:incoming>
       <bpmn:outgoing>Flow_0dcgdsg</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1p8q3rp" name="Send info" camunda:type="external" camunda:topic="SEND_INFO_TOPIC">
-      <bpmn:incoming>Flow_1uy55sm</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fc0thp</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_05wbun5" sourceRef="StartEvent_1" targetRef="Activity_1voxb1a" />
-    <bpmn:sequenceFlow id="Flow_0fc0thp" sourceRef="Activity_1p8q3rp" targetRef="Gateway_0nlc5f4" />
-    <bpmn:sequenceFlow id="Flow_1uy55sm" sourceRef="Activity_1voxb1a" targetRef="Activity_1p8q3rp" />
+    <bpmn:sequenceFlow id="Flow_05wbun5" sourceRef="START_EVENT_CLIENT_ID" targetRef="WRITE_LOG_INFO_TASK" />
+    <bpmn:sequenceFlow id="Flow_1uy55sm" sourceRef="WRITE_LOG_INFO_TASK" targetRef="SEND_INFO_TASK" />
     <bpmn:userTask id="Activity_064eiae" name="Check account">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -70,19 +65,24 @@
       <bpmn:incoming>Flow_0ygjb7m</bpmn:incoming>
       <bpmn:outgoing>Flow_10yv5mt</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:sendTask id="SEND_INFO_TASK" name="Send info" camunda:type="external" camunda:topic="SEND_INFO_TOPIC">
+      <bpmn:incoming>Flow_1uy55sm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fc0thp</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0fc0thp" sourceRef="SEND_INFO_TASK" targetRef="Gateway_0nlc5f4" />
     <bpmn:textAnnotation id="TextAnnotation_1l8p9hh">
       <bpmn:text>Start event with form</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1c43wma" sourceRef="StartEvent_1" targetRef="TextAnnotation_1l8p9hh" />
+    <bpmn:association id="Association_1c43wma" sourceRef="START_EVENT_CLIENT_ID" targetRef="TextAnnotation_1l8p9hh" />
   </bpmn:process>
   <bpmn:message id="Message_00g8o6t" name="CLIENT_CREATE_ACCOUNT" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PROCESS_CREATE_ACCOUNT_ID">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PROCESS_CREATE_ACCOUNT_CLIENT_ID">
       <bpmndi:BPMNShape id="TextAnnotation_1l8p9hh_di" bpmnElement="TextAnnotation_1l8p9hh">
         <dc:Bounds x="147" y="80" width="100" height="41" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="START_EVENT_CLIENT_ID">
         <dc:Bounds x="179" y="229" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0gxlxxw_di" bpmnElement="Gateway_0nlc5f4">
@@ -91,17 +91,17 @@
       <bpmndi:BPMNShape id="Event_1u73gwj_di" bpmnElement="Event_1u73gwj">
         <dc:Bounds x="772" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_055f2p2_di" bpmnElement="Activity_1967w52">
+      <bpmndi:BPMNShape id="Activity_055f2p2_di" bpmnElement="CLOSE_BY_INACTIVITY_TASK">
         <dc:Bounds x="880" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_10rqmr2_di" bpmnElement="Event_10rqmr2">
         <dc:Bounds x="1043" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xlo0iz_di" bpmnElement="Activity_1p8q3rp">
+      <bpmndi:BPMNShape id="Activity_1xlo0iz_di" bpmnElement="SEND_INFO_TASK">
         <dc:Bounds x="460" y="207" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_103gwfl_di" bpmnElement="Activity_1voxb1a">
+      <bpmndi:BPMNShape id="Activity_103gwfl_di" bpmnElement="WRITE_LOG_INFO_TASK">
         <dc:Bounds x="280" y="207" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

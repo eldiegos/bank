@@ -1,4 +1,4 @@
-package my.bank.process.data;
+package my.bank.process.bank.data;
 
 import java.io.Serializable;
 
@@ -10,6 +10,6 @@ public class ComplexData implements Serializable{
 
 	String id;
 	String name;
-	String address;
-	
+	String email;
+	Long age;
 }
