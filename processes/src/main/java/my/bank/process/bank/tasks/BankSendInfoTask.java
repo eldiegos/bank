@@ -1,6 +1,7 @@
-package my.bank.process.client.tasks;
+package my.bank.process.bank.tasks;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,13 +21,13 @@ import org.springframework.stereotype.Component;
 import lombok.extern.java.Log;
 import my.bank.process.bank.BankProcess;
 import my.bank.process.bank.data.ComplexData;
-import my.bank.process.client.ClientProcess;
+
 
 @Log
 @Component
-@ExternalTaskSubscription(ClientProcess.SEND_INFO_TASK)
-public class SendInfoTask implements ExternalTaskHandler {
-
+@ExternalTaskSubscription(BankProcess.SEND_INFO_TASK)
+public class BankSendInfoTask implements ExternalTaskHandler {
+	
 	private static String camundaBaseUri = "http://localhost:8080/engine-rest";
 
 	@Override
@@ -36,53 +37,36 @@ public class SendInfoTask implements ExternalTaskHandler {
 
 			Map<String, Object> vars = externalTask.getAllVariables();
 			
-			String processInstanceId = externalTask.getProcessInstanceId();
+			
+			String clientProcessInstanceId = (String) vars.get("client_process_instance_id");
+			
 
-			String clientName1 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_1);
-			Long clientAge1 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_1);
-			String clientEmail1 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_1);
-
-			String clientName2 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_2);
-			Long clientAge2 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_2);
-			String clientEmail2 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_2);
-
-			ComplexData client1 = new ComplexData();
-			client1.setId("0000-000-000-1111");
-			client1.setEmail(clientEmail1);
-			client1.setName(clientName1);
-			client1.setAge(clientAge1);
-
-			ComplexData client2 = new ComplexData();
-			client2.setId("0000-000-000-2222");
-			client2.setEmail(clientEmail2);
-			client2.setName(clientName2);
-			client2.setAge(clientAge2);
-
+			log.info("SEND INFO TO PROCESS CLIENT: " + clientProcessInstanceId);
+			
 			ApiClient ac = new ApiClient().setBasePath(camundaBaseUri);
 			MessageApi apiMessage = new MessageApi(ac);
 
 			Map<String, VariableValueDto> variables = new HashMap();
 
-			VariableValueDto vClient1 = new VariableValueDto();
-			// vClient1.setType("String");
-			vClient1.setValue(client1);
-			variables.put(BankProcess.BANK_START_VAR_CLIENT_1, vClient1);
-
-			VariableValueDto vClient2 = new VariableValueDto();
-			// vClient1.setType("String");
-			vClient2.setValue(client2);
-			variables.put(BankProcess.BANK_START_VAR_CLIENT_2, vClient2);
+			String risk = (String) vars.get("risk");
 			
-			VariableValueDto vProcessClient = new VariableValueDto();
-			//vProcessClient.setType("String");
-			vProcessClient.setValue(processInstanceId);
-			variables.put("client_process_instance_id", vProcessClient);
+			String bankProcessInstanceId = externalTask.getProcessDefinitionId();
+			VariableValueDto vProcessBankId = new VariableValueDto();
+			vProcessBankId.setType("String");
+			vProcessBankId.setValue(bankProcessInstanceId);
+			variables.put("bank_process_instance_id", vProcessBankId);
+			
+			VariableValueDto vRisk = new VariableValueDto();
+			vRisk.setType("String");
+			vRisk.setValue(risk);
+			variables.put("risk", vRisk);
 
 			CorrelationMessageDto msgDto = new CorrelationMessageDto();
 			msgDto.setVariablesInResultEnabled(true);
 			msgDto.resultEnabled(true);
+			msgDto.setProcessInstanceId(clientProcessInstanceId);
 			msgDto.setProcessVariables(variables);
-			msgDto.setMessageName(BankProcess.BANK_START_MESSAGE);
+			msgDto.setMessageName("CLIENT_CREATE_ACCOUNT");
 
 			try {
 				List<MessageCorrelationResultWithVariableDto> result = apiMessage.deliverMessage(msgDto);
