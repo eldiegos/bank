@@ -30,7 +30,11 @@ public class CreateAccountTask implements ExternalTaskHandler {
 			LinkedHashMap client1 = (LinkedHashMap) vars.get(BankProcess.BANK_START_VAR_CLIENT_1);
 			LinkedHashMap client2 = (LinkedHashMap) vars.get(BankProcess.BANK_START_VAR_CLIENT_2);
 
+			log.info("CREATING FAKE ACCOUNT");
+			log.info("CLIENT 1: " + client1.get("name"));
+			log.info("CLIENT 2: " + client2.get("name"));
 			log.info("ACCOUNT JUST CREATED");
+			
 			
 			externalTaskService.complete(externalTask);
 

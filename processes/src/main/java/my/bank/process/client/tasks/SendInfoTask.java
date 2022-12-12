@@ -38,66 +38,85 @@ public class SendInfoTask implements ExternalTaskHandler {
 			
 			String processInstanceId = externalTask.getProcessInstanceId();
 
-			String clientName1 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_1);
-			Long clientAge1 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_1);
-			String clientEmail1 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_1);
-
-			String clientName2 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_2);
-			Long clientAge2 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_2);
-			String clientEmail2 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_2);
-
-			ComplexData client1 = new ComplexData();
-			client1.setId("0000-000-000-1111");
-			client1.setEmail(clientEmail1);
-			client1.setName(clientName1);
-			client1.setAge(clientAge1);
-
-			ComplexData client2 = new ComplexData();
-			client2.setId("0000-000-000-2222");
-			client2.setEmail(clientEmail2);
-			client2.setName(clientName2);
-			client2.setAge(clientAge2);
-
-			ApiClient ac = new ApiClient().setBasePath(camundaBaseUri);
-			MessageApi apiMessage = new MessageApi(ac);
-
+			ComplexData client1 = this.readClient1(vars);
+			ComplexData client2 = this.readClient2(vars);
+			
+			
 			Map<String, VariableValueDto> variables = new HashMap();
-
-			VariableValueDto vClient1 = new VariableValueDto();
-			// vClient1.setType("String");
-			vClient1.setValue(client1);
-			variables.put(BankProcess.BANK_START_VAR_CLIENT_1, vClient1);
-
-			VariableValueDto vClient2 = new VariableValueDto();
-			// vClient1.setType("String");
-			vClient2.setValue(client2);
-			variables.put(BankProcess.BANK_START_VAR_CLIENT_2, vClient2);
 			
-			VariableValueDto vProcessClient = new VariableValueDto();
-			//vProcessClient.setType("String");
-			vProcessClient.setValue(processInstanceId);
-			variables.put("client_process_instance_id", vProcessClient);
-
-			CorrelationMessageDto msgDto = new CorrelationMessageDto();
-			msgDto.setVariablesInResultEnabled(true);
-			msgDto.resultEnabled(true);
-			msgDto.setProcessVariables(variables);
-			msgDto.setMessageName(BankProcess.BANK_START_MESSAGE);
-
-			try {
-				List<MessageCorrelationResultWithVariableDto> result = apiMessage.deliverMessage(msgDto);
-				log.info(result.toString());
-			} catch (ApiException e) {
-				e.printStackTrace();
-			}
+			this.appendVarToMessage(variables, client1, BankProcess.BANK_START_VAR_CLIENT_1);
+			this.appendVarToMessage(variables, client2, BankProcess.BANK_START_VAR_CLIENT_2);
+			this.appendVarToMessage(variables, processInstanceId, "client_process_instance_id");
 			
-			
+			this.sendMessage(variables);
+
 			externalTaskService.complete(externalTask);
 
 		} catch (Exception ex) {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 
+	}
+	
+	
+	private void sendMessage(Map<String, VariableValueDto> variables) {
+		
+		ApiClient ac = new ApiClient().setBasePath(camundaBaseUri);
+		MessageApi apiMessage = new MessageApi(ac);
+		
+		CorrelationMessageDto msgDto = new CorrelationMessageDto();
+		msgDto.setVariablesInResultEnabled(true);
+		msgDto.resultEnabled(true);
+		msgDto.setProcessVariables(variables);
+		msgDto.setMessageName(BankProcess.BANK_START_MESSAGE);
+
+		try {
+			List<MessageCorrelationResultWithVariableDto> result = apiMessage.deliverMessage(msgDto);
+			log.info(result.toString());
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	private ComplexData readClient1(Map<String, Object> vars) {
+		
+		String clientName1 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_1);
+		Long clientAge1 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_1);
+		String clientEmail1 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_1);
+		
+		ComplexData client1 = new ComplexData();
+		client1.setId("0000-000-000-1111");
+		client1.setEmail(clientEmail1);
+		client1.setName(clientName1);
+		client1.setAge(clientAge1);
+		
+		return client1;
+	}
+	
+	private ComplexData readClient2(Map<String, Object> vars) {
+		
+		String clientName2 = (String) vars.get(ClientProcess.VAR_CLIENT_NAME_2);
+		Long clientAge2 = (Long) vars.get(ClientProcess.VAR_CLIENT_AGE_2);
+		String clientEmail2 = (String) vars.get(ClientProcess.VAR_CLIENT_EMAIL_2);
+
+		ComplexData client2 = new ComplexData();
+		client2.setId("0000-000-000-2222");
+		client2.setEmail(clientEmail2);
+		client2.setName(clientName2);
+		client2.setAge(clientAge2);
+		
+		return client2;
+	
+	}
+	
+	private void appendVarToMessage(Map<String, VariableValueDto> variables, Object valor, String name) {
+		
+		VariableValueDto vDto = new VariableValueDto();
+		// vClient1.setType("String");
+		vDto.setValue(valor);
+		variables.put(name, vDto);
 	}
 
 }

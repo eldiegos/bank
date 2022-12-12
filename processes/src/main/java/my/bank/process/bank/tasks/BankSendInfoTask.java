@@ -39,16 +39,15 @@ public class BankSendInfoTask implements ExternalTaskHandler {
 			
 			
 			String clientProcessInstanceId = (String) vars.get("client_process_instance_id");
-			
+			String risk = (String) vars.get("risk");
 
 			log.info("SEND INFO TO PROCESS CLIENT: " + clientProcessInstanceId);
 			
-			ApiClient ac = new ApiClient().setBasePath(camundaBaseUri);
-			MessageApi apiMessage = new MessageApi(ac);
+			
 
 			Map<String, VariableValueDto> variables = new HashMap();
 
-			String risk = (String) vars.get("risk");
+			
 			
 			String bankProcessInstanceId = externalTask.getProcessDefinitionId();
 			VariableValueDto vProcessBankId = new VariableValueDto();
@@ -61,20 +60,7 @@ public class BankSendInfoTask implements ExternalTaskHandler {
 			vRisk.setValue(risk);
 			variables.put("risk", vRisk);
 
-			CorrelationMessageDto msgDto = new CorrelationMessageDto();
-			msgDto.setVariablesInResultEnabled(true);
-			msgDto.resultEnabled(true);
-			msgDto.setProcessInstanceId(clientProcessInstanceId);
-			msgDto.setProcessVariables(variables);
-			msgDto.setMessageName("CLIENT_CREATE_ACCOUNT");
-
-			try {
-				List<MessageCorrelationResultWithVariableDto> result = apiMessage.deliverMessage(msgDto);
-				log.info(result.toString());
-			} catch (ApiException e) {
-				e.printStackTrace();
-			}
-			
+			this.sendMessageToClient(clientProcessInstanceId, variables);
 			
 			externalTaskService.complete(externalTask);
 
@@ -82,6 +68,27 @@ public class BankSendInfoTask implements ExternalTaskHandler {
 			log.log(Level.SEVERE, ex.getMessage(), ex);
 		}
 
+	}
+	
+	private void sendMessageToClient(String clientProcessInstanceId, Map<String, VariableValueDto> variables) {
+		
+		CorrelationMessageDto msgDto = new CorrelationMessageDto();
+		msgDto.setVariablesInResultEnabled(true);
+		msgDto.resultEnabled(true);
+		msgDto.setProcessInstanceId(clientProcessInstanceId);
+		msgDto.setProcessVariables(variables);
+		msgDto.setMessageName("CLIENT_CREATE_ACCOUNT");
+
+		ApiClient ac = new ApiClient().setBasePath(camundaBaseUri);
+		MessageApi apiMessage = new MessageApi(ac);
+		
+		try {
+			List<MessageCorrelationResultWithVariableDto> result = apiMessage.deliverMessage(msgDto);
+			log.info(result.toString());
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

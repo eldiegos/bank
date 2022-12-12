@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.java.Log;
 import my.bank.process.bank.BankProcess;
-import my.bank.process.bank.data.ComplexData;
 
 
 @Log

@@ -27,10 +27,9 @@ public class CancelCreationTask implements ExternalTaskHandler {
 
 			Map<String, Object> vars = externalTask.getAllVariables();
 			
-			LinkedHashMap client1 = (LinkedHashMap) vars.get(BankProcess.BANK_START_VAR_CLIENT_1);
-			LinkedHashMap client2 = (LinkedHashMap) vars.get(BankProcess.BANK_START_VAR_CLIENT_2);
+			String risk = (String) vars.get("risk");
 
-			log.info("TOO MUCH RISK. CANCELING CREATION");
+			log.info("TOO MUCH RISK. CANCELING CREATION. The risk is "+risk);
 			
 			externalTaskService.complete(externalTask);
 
