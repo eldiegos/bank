@@ -1,7 +1,6 @@
 package my.bank.process.bank.tasks;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.java.Log;
 import my.bank.process.bank.BankProcess;
-import my.bank.process.bank.data.ComplexData;
 
 
 @Log

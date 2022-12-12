@@ -44,15 +44,13 @@
         <!-- OpenAPI -->
         <openapi-generator-version>5.4.0</openapi-generator-version>
         
-        <!-- slf4j -->
-        <slf4j.version>2.0.5</slf4j.version>
+        
 
 	</properties>
 
 
 	<modules>
 		<module>camunda</module>
-		<module>bank-camunda-rest</module>
 		<module>processes</module>
 	</modules>
 

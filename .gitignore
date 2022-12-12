@@ -3,6 +3,8 @@
 
 target/
 
+# H2 database files
+*.db
 
 ### STS ###
 .apt_generated

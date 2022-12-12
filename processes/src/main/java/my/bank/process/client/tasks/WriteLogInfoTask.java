@@ -10,6 +10,7 @@ import org.camunda.bpm.client.task.ExternalTaskService;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import my.bank.process.client.ClientProcess;
 
 @Log
