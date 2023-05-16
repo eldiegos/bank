@@ -71,6 +71,23 @@
       <bpmn:incoming>Flow_0c7knz8</bpmn:incoming>
       <bpmn:outgoing>Flow_1t9dkdb</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:subProcess id="Activity_1i493sq" triggeredByEvent="true">
+      <bpmn:startEvent id="Event_0i43sf4">
+        <bpmn:outgoing>Flow_1b9e2u8</bpmn:outgoing>
+        <bpmn:conditionalEventDefinition id="ConditionalEventDefinition_0ljlbmk" camunda:variableName="risk">
+          <bpmn:condition xsi:type="bpmn:tFormalExpression">${risk == 'high'}</bpmn:condition>
+        </bpmn:conditionalEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1b9e2u8" sourceRef="Event_0i43sf4" targetRef="Activity_0pdaaue" />
+      <bpmn:endEvent id="Event_1j1e8tz">
+        <bpmn:incoming>Flow_0gba4m6</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0gba4m6" sourceRef="Activity_0pdaaue" targetRef="Event_1j1e8tz" />
+      <bpmn:serviceTask id="Activity_0pdaaue" name="Alert risk to boss">
+        <bpmn:incoming>Flow_1b9e2u8</bpmn:incoming>
+        <bpmn:outgoing>Flow_0gba4m6</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
   </bpmn:process>
   <bpmn:message id="Message_0t7ntkh" name="BANK_START_MESSAGE" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -113,6 +130,26 @@
       <bpmndi:BPMNShape id="Activity_0ycx9ow_di" bpmnElement="Activity_1a0a872">
         <dc:Bounds x="570" y="270" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c19e4k_di" bpmnElement="Activity_1i493sq" isExpanded="true">
+        <dc:Bounds x="510" y="480" width="460" height="190" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x4lr2s_di" bpmnElement="Event_0i43sf4">
+        <dc:Bounds x="572" y="562" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j1e8tz_di" bpmnElement="Event_1j1e8tz">
+        <dc:Bounds x="862" y="562" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02euh1a_di" bpmnElement="Activity_0pdaaue">
+        <dc:Bounds x="690" y="540" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1b9e2u8_di" bpmnElement="Flow_1b9e2u8">
+        <di:waypoint x="608" y="580" />
+        <di:waypoint x="690" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gba4m6_di" bpmnElement="Flow_0gba4m6">
+        <di:waypoint x="790" y="580" />
+        <di:waypoint x="862" y="580" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0d9q31x_di" bpmnElement="Flow_0d9q31x">
         <di:waypoint x="188" y="310" />
         <di:waypoint x="240" y="310" />
