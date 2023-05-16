@@ -3,8 +3,7 @@
 
 target/
 
-# H2 database files
-*.db
+
 
 ### STS ###
 .apt_generated
@@ -131,3 +130,8 @@ local.properties
 .worksheet
 =======
 /logs/spring-app.log
+
+
+# H2 database files
+camunda-h2-database.mv.db
+camunda-h2-database.trace.db
