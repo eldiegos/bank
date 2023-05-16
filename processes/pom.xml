@@ -37,16 +37,6 @@
 			<groupId>my.bank</groupId>
 			<artifactId>bank-camunda-rest</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-simple</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.openapitools</groupId>
-					<artifactId>openapi-generator-cli</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		
 

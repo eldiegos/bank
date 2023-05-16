@@ -3,7 +3,12 @@
 
 target/
 
+<<<<<<< HEAD
 
+=======
+# H2 database files
+/camunda/*.db
+>>>>>>> 06303598641fc151b9b7cf3e146246fb779baf8c
 
 ### STS ###
 .apt_generated
@@ -131,7 +136,10 @@ local.properties
 =======
 /logs/spring-app.log
 
+<<<<<<< HEAD
 
 # H2 database files
 camunda-h2-database.mv.db
 camunda-h2-database.trace.db
+=======
+>>>>>>> 06303598641fc151b9b7cf3e146246fb779baf8c
